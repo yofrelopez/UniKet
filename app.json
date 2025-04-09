@@ -26,6 +26,7 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
+        "android.permission.RECORD_AUDIO",
         "android.permission.RECORD_AUDIO"
       ],
       "package": "com.tubeguruji.communitymarketplace"
@@ -46,6 +47,12 @@
         "projectId": "70f4ae77-489a-40e8-aaea-13108ce8a721"
       }
     },
-    "owner": "idev.pe"
+    "owner": "idev.pe",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/70f4ae77-489a-40e8-aaea-13108ce8a721"
+    }
   }
 }

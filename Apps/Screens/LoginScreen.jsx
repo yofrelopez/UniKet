@@ -1,25 +1,38 @@
 import { View, Text, Image, TouchableOpacity, Alert } from 'react-native';
 import React, { useCallback } from 'react';
 import * as WebBrowser from 'expo-web-browser';
-import { useWarmUpBrowser } from '../../hooks/warmUpBrowser';
 import { useOAuth } from '@clerk/clerk-expo';
+import { useWarmUpBrowser } from '../../hooks/warmUpBrowser';
 
 WebBrowser.maybeCompleteAuthSession();
 
 export default function LoginScreen() {
   useWarmUpBrowser();
 
-  const { startOAuthFlow } = useOAuth({ strategy: 'oauth_microsoft' });
+  const { startOAuthFlow: startGoogleOAuth } = useOAuth({ strategy: 'oauth_google' });
+  const { startOAuthFlow: startMicrosoftOAuth } = useOAuth({ strategy: 'oauth_microsoft' });
 
-  const onPress = useCallback(async () => {
+  const onGooglePress = useCallback(async () => {
     try {
-      const { createdSessionId, setActive } = await startOAuthFlow();
+      const { createdSessionId, setActive } = await startGoogleOAuth();
       if (createdSessionId) {
         await setActive({ session: createdSessionId });
       }
     } catch (err) {
-      console.error('OAuth error', err);
-      Alert.alert('Login Error', 'There was a problem signing in. Please try again.');
+      console.error('Google OAuth error', err);
+      Alert.alert('Login Error', 'Hubo un problema al iniciar sesión con Google.');
+    }
+  }, []);
+
+  const onMicrosoftPress = useCallback(async () => {
+    try {
+      const { createdSessionId, setActive } = await startMicrosoftOAuth();
+      if (createdSessionId) {
+        await setActive({ session: createdSessionId });
+      }
+    } catch (err) {
+      console.error('Microsoft OAuth error', err);
+      Alert.alert('Login Error', 'Hubo un problema al iniciar sesión con Microsoft.');
     }
   }, []);
 
@@ -44,16 +57,39 @@ export default function LoginScreen() {
           Welcome to UniKet! Buy, sell, and connect with fellow HBCU students through our exclusive campus marketplace.
         </Text>
 
+        {/* Botón Google */}
         <TouchableOpacity
-          onPress={onPress}
-          className="p-4 rounded-full mt-8"
-          style={{ backgroundColor: '#f2e9c4' }}
+          onPress={onGooglePress}
+          className="p-4 rounded-full mt-8 flex-row items-center justify-center"
+          style={{ backgroundColor: '#ffffff', gap: 12 }}
         >
+          <Image
+            source={require('./../../assets/icons/google.png')}
+            className="w-[24px] h-[24px]"
+          />
           <Text
             className="text-center text-[18px]"
             style={{ color: '#2d978e', fontWeight: 'bold' }}
           >
-            Login with Microsoft
+            Iniciar con Google
+          </Text>
+        </TouchableOpacity>
+
+        {/* Botón Microsoft */}
+        <TouchableOpacity
+          onPress={onMicrosoftPress}
+          className="p-4 rounded-full mt-4 flex-row items-center justify-center"
+          style={{ backgroundColor: '#ffffff', gap: 12 }}
+        >
+          <Image
+            source={require('./../../assets/icons/microsoft.png')}
+            className="w-[24px] h-[24px]"
+          />
+          <Text
+            className="text-center text-[18px]"
+            style={{ color: '#2d978e', fontWeight: 'bold' }}
+          >
+            Iniciar con Microsoft
           </Text>
         </TouchableOpacity>
       </View>
